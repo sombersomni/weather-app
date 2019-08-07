@@ -4,10 +4,13 @@ import axios from 'axios';
 //components
 import Forecast from './components/Forecast.jsx';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFog, faCloudShowers, faCloudSun, faSunCloud, faClouds, faThunderstormSun, faThunderstormMoon, faCloudsMoon, faCloudMoon } from '@fortawesome/pro-duotone-svg-icons'
-import { faCloud, faSun } from '@fortawesome/pro-solid-svg-icons'
+import { faFog, faCloudHail, faCloudSnow, faCloudShowers, faCloudSun, faSunCloud, faClouds, faThunderstormSun, faThunderstormMoon, faCloudsMoon, faCloudMoon } from '@fortawesome/pro-duotone-svg-icons'
+import { faCloud, faSun, faTornado } from '@fortawesome/pro-solid-svg-icons'
 import './App.css';
 library.add(
+  faTornado,
+  faCloudHail,
+  faCloudSnow,
   faCloudShowers,
   faCloudSun, 
   faSunCloud,
@@ -47,7 +50,7 @@ export default function App() {
         console.log(`Latitude : ${coords.latitude}`);
         console.log(`Longitude: ${coords.longitude}`);
         console.log(`More or less ${coords.accuracy} meters.`);
-        axios.get(`https://api.weather.gov/points/39.938039,-75.183536`)
+        axios.get(`https://api.weather.gov/points/${coords.latitude},${coords.longitude}`)
           .then(res => {
             if (res.status === 200) {
               console.log(res.data);

@@ -9,11 +9,13 @@ const ForecastContainer = styled.div`
 `;
 export default function Forecast({ icon, name, shortForecast, detailedForecast }) {
     function setIcon(weather, time) {
-        console.log(weather);
         const w = weather.toLowerCase();
         const isNight = time.toLowerCase().includes('night');
         const isThuderStorm = w.includes('thunderstorm');
         const isShowers = w.includes('showers');
+        const isTornado = w.includes('tornado');
+        const isHail = w.includes('hail');
+        const isSnowy = w.includes('snow');
         const isFog = w.includes('fog');
         switch(w) {
             case 'mostly sunny':
@@ -32,6 +34,15 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast }
                 if(isFog) {
                     return ['fad', 'fog']
                 }
+                if(isSnowy) {
+                    return ['fad', 'cloud-snow']
+                }
+                if(isHail) {
+                    return ['fad', 'cloud-hail']
+                }
+                if(isTornado) {
+                    return ['fas', 'tornado']
+                }
                 return isNight? ['fad', 'clouds-moon'] : ['fad', 'cloud-sun']
         }
     }
@@ -39,13 +50,11 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast }
     return (
         <ForecastContainer>
             {shortForecast.toLowerCase().split('and').filter(each => each !== 'and').map(forecast => 
-            {
-                const newForecast = forecast.trim();
-                console.log(newForecast);
-                return <FontAwesomeIcon 
+                <FontAwesomeIcon
+                key={forecast.trim()} 
                 size='4x'
-                icon={setIcon(newForecast, name)} />
-            })}
+                icon={setIcon(forecast.trim(), name)} />
+            )}
             <h3>{name}</h3>
             <p>{shortForecast}</p>
         </ForecastContainer>
