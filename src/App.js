@@ -6,6 +6,8 @@ import Forecast from './components/Forecast.jsx';
 import MainReport from './components/MainReport.jsx';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
+  faMountains,
+  faCompass,
   faFog,
   faCloudHail,
   faCloudSnow,
@@ -16,12 +18,16 @@ import {
   faThunderstormSun,
   faThunderstormMoon,
   faCloudsMoon,
-  faCloudMoon
+  faCloudMoon,
+  faWind
 } from '@fortawesome/pro-duotone-svg-icons';
 import { faCloud, faSun, faTornado } from '@fortawesome/pro-solid-svg-icons';
 import { faCircle } from '@fortawesome/pro-regular-svg-icons';
 import './App.css';
 library.add(
+  faMountains,
+  faCompass,
+  faWind,
   faCircle,
   faTornado,
   faCloudHail,
@@ -118,6 +124,8 @@ export default function App() {
       <Container>
         {hourlyPeriods.length > 0 ?
           <MainReport
+            elevation={savedElevation}
+            detailedForecast={savedPeriods.length > 0 ? savedPeriods[0].detailedForecast : null}
             currentReport={hourlyPeriods[0]}
             city={city}
             state={state} /> : null

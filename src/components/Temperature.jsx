@@ -8,9 +8,6 @@ const TempContainer = styled.div`
     flex-wrap: no-wrap;
     align-items: top;
     justify-content: center;
-    background: #00A9FC;
-    width: 50px;
-    height: 50px;
 `;
 
 const IconContainer = styled.div`
@@ -18,10 +15,12 @@ const IconContainer = styled.div`
     position: relative;
 `;
 
+const Container = styled.div`
+    min-width: 150px;
+`;
 export default function Temperature({temperature, unit}) {
     return (
-        <div>
-            <h5>temperature</h5>
+        <Container>
             <TempContainer>
                 <h1>{temperature}</h1>
                 <IconContainer>
@@ -38,6 +37,6 @@ export default function Temperature({temperature, unit}) {
                 </IconContainer>
             </TempContainer>
 
-        </div>
+        </Container>
     )
 }
