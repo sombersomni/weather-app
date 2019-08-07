@@ -7,10 +7,9 @@ const ForecastContainer = styled.div`
     margin: 5px;
     font-size: 0.8em;
 `;
-export default function Forecast({ icon, name, shortForecast, detailedForecast }) {
-    function setIcon(weather, time) {
+export default function Forecast({ icon, name, shortForecast, detailedForecast, isDaytime }) {
+    function setIcon(weather, isDay) {
         const w = weather.toLowerCase();
-        const isNight = time.toLowerCase().includes('night');
         const isThuderStorm = w.includes('thunderstorm');
         const isShowers = w.includes('showers');
         const isTornado = w.includes('tornado');
@@ -23,10 +22,10 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast }
             case 'sunny':
                 return ['fas', 'sun']
             case 'partly cloudy':
-                return isNight? ['fad', 'cloud-moon'] : ['fad', 'clouds']
+                return !isDay ? ['fad', 'cloud-moon'] : ['fad', 'clouds']
             default:
                 if(isThuderStorm) {
-                    return isNight? ['fad', 'thunderstorm-moon'] : ['fad', 'thunderstorm-sun']
+                    return !isDay ? ['fad', 'thunderstorm-moon'] : ['fad', 'thunderstorm-sun']
                 }
                 if(isShowers) {
                     return ['fad', 'cloud-showers']
@@ -43,7 +42,7 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast }
                 if(isTornado) {
                     return ['fas', 'tornado']
                 }
-                return isNight? ['fad', 'clouds-moon'] : ['fad', 'cloud-sun']
+                return !isDay ? ['fad', 'clouds-moon'] : ['fad', 'cloud-sun']
         }
     }
     
@@ -53,7 +52,7 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast }
                 <FontAwesomeIcon
                 key={forecast.trim()} 
                 size='4x'
-                icon={setIcon(forecast.trim(), name)} />
+                icon={setIcon(forecast.trim(), isDaytime)} />
             )}
             <h3>{name}</h3>
             <p>{shortForecast}</p>
