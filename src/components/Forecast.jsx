@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import WeatherModal from '../components/WeatherModal.jsx';
 import Temperature from './Temperature.jsx';
+import { fadeIn, moveUp } from './Animations';
 
+const ForecastIcon = styled.div`
+    animation: 2s ${moveUp} ease-in both;
+`;
 const ForecastContainer = styled.div`
     width: 150px;
     margin: 5px;
@@ -78,10 +82,11 @@ export default function Forecast({ temperature, temperatureUnit, name, shortFore
                 color={primaryColor}
                 disable={disable}>
                 {shortForecast.toLowerCase().split('and').filter(each => each !== 'and').map(forecast =>
-                    <FontAwesomeIcon
-                        key={forecast.trim()}
-                        size='4x'
-                        icon={setIcon(forecast.trim(), isDaytime)} />
+                    <ForecastIcon  key={forecast.trim()}>
+                        <FontAwesomeIcon
+                            size='4x'
+                            icon={setIcon(forecast.trim(), isDaytime)} />
+                    </ForecastIcon>
                 )}
                 <Temperature
                     small={true}

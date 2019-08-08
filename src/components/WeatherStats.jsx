@@ -2,6 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import convertDegs from '../helper/convertDegs';
+import { rotate } from './Animations';
+
+const ForecastIcon = styled.div`
+    animation: ${props => Math.round(1/props.speed * 4) || 4}s ${rotate} ease-in-out both;
+`;
 
 const StatsContainer = styled.div`
     display: flex;
@@ -28,7 +33,7 @@ const StatTitle = styled.h5`
     padding: 5px;
     border-radius: 5px;
 `;
-export default function WeatherStats({wind, windDir, elevation, heatIndex}) {
+export default function WeatherStats({wind, windDir, elevation, heatIndex, humidity}) {
     const windStat = wind.split(' ');
     const windSpeed = windStat[0].trim();
     const windSpeedUnit = windStat[1].trim();
@@ -38,6 +43,7 @@ export default function WeatherStats({wind, windDir, elevation, heatIndex}) {
                 <StatTitle>Wind Speed</StatTitle>
                 <FontAwesomeIcon 
                     size='2x'
+                    style={{ color: '#009CFC'}}
                     icon={['fad', 'wind']} />
                     <StatText>
                         {windSpeed} 
@@ -48,9 +54,13 @@ export default function WeatherStats({wind, windDir, elevation, heatIndex}) {
             </Stat>
             <Stat>
                 <StatTitle>Wind Direction</StatTitle>
-                <FontAwesomeIcon 
-                    size='2x'
-                    icon={['fad', 'compass']} />
+                <ForecastIcon 
+                    speed={parseInt(windSpeed)}>
+                    <FontAwesomeIcon 
+                        size='2x'
+                        style={{ color: '#362E52' }}
+                        icon={['fad', 'compass']} />
+                </ForecastIcon>
                     <StatText>
                         {windDir} 
                     </StatText>
@@ -60,6 +70,7 @@ export default function WeatherStats({wind, windDir, elevation, heatIndex}) {
                 <StatTitle>Elevation</StatTitle>
                 <FontAwesomeIcon 
                     size='2x'
+                    style={{ color: '#ADC7DC' }}
                     icon={['fad', 'mountains']} />
                      <StatText>
                         {elevation.value.toFixed(2)} 
@@ -73,6 +84,7 @@ export default function WeatherStats({wind, windDir, elevation, heatIndex}) {
                 <StatTitle>Heat Index</StatTitle>
                 <FontAwesomeIcon 
                     size='2x'
+                    style={{ color: '#AC2900'}}
                     icon={['fad', 'temperature-hot']} />
                      <StatText>
                         {heatIndex.uom.includes('degC') ? 
@@ -91,6 +103,17 @@ export default function WeatherStats({wind, windDir, elevation, heatIndex}) {
                                 icon={['far', 'circle']} />
                         </span>
                         
+                    </StatText>
+            </Stat> ) : null }
+            { humidity && humidity.values.length > 1 ? 
+            ( <Stat>
+                <StatTitle>Humidity</StatTitle>
+                <FontAwesomeIcon 
+                    size='2x'
+                    style={{ color: '#009CFC'}}
+                    icon={['fad', 'humidity']} />
+                     <StatText>
+                        { humidity.values[0].value.toFixed(2)} %      
                     </StatText>
             </Stat> ) : null }
         </StatsContainer>
