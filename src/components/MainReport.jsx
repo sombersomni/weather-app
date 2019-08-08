@@ -3,7 +3,7 @@ import Forecast from './Forecast.jsx';
 import Temperature from './Temperature.jsx';
 import WeatherStats from './WeatherStats.jsx';
 import styled from 'styled-components';
-
+import { Description } from './Containers.jsx';
 const TempContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -28,14 +28,6 @@ const WeatherFeature = styled.div`
     width: 100%;
 `;
 
-const Description = styled.p`
-    text-align: left;
-    justify-content: newspaper;
-    &:first-letter {
-        font-size: 2em;
-        color: ${props => props.color || '#00ACF9'}
-    }
-`;
 export default function MainReport({ city, state, currentReport, detailedForecast, weatherStats, primaryColor }) {
     const { 
         temperature, 

@@ -23,9 +23,10 @@ import {
   faWind
 } from '@fortawesome/pro-duotone-svg-icons';
 import { faCloud, faSun, faTornado } from '@fortawesome/pro-solid-svg-icons';
-import { faCircle } from '@fortawesome/pro-regular-svg-icons';
+import { faCircle, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import './App.css';
 library.add(
+  faTimes,
   faTemperatureHot,
   faMountains,
   faCompass,

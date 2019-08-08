@@ -63,7 +63,10 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast, 
         <React.Fragment>
             <WeatherModal
                 open={open} 
-                handleClose={handleClose}/>
+                handleClose={handleClose}
+                primaryColor={primaryColor}
+                name={name}
+                description={detailedForecast}/>
             <ForecastContainer 
                 onMouseEnter={() => { setIsOn(true) }}
                 onMouseLeave={() => { setIsOn(false) }}
