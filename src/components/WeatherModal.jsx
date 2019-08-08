@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Description } from './Containers.jsx';
+import Temperature from './Temperature.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 
@@ -29,7 +30,19 @@ const IconContainer = styled.div`
         opacity: 0.6;
     }
 `;
-export default function WeatherModal({ open, handleClose, description, primaryColor, name}) {
+
+const TitleContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-wrap: no-wrap;
+    justify-content: space-between;
+`;
+
+const TempContainer = styled.div`
+    text-align: center;
+    color: ${props => props.primaryColor}
+`;
+export default function WeatherModal({ open, handleClose, description, primaryColor, name, temperature, temperatureUnit}) {
     const classes = useStyles();
     // getModalStyle is not a pure function, we roll the style only on the first render
     return (
@@ -44,7 +57,15 @@ export default function WeatherModal({ open, handleClose, description, primaryCo
                     <IconContainer onClick={handleClose}>
                         <FontAwesomeIcon icon={['far', 'times']} />
                     </IconContainer>
-                    <h2 id="modal-title">{name}</h2>
+                    <TitleContainer>
+                        <h2 id="modal-title">{name}</h2>
+                        <TempContainer primaryColor={primaryColor}>
+                            <Temperature 
+                                small={false} 
+                                temperature={temperature}
+                                unit={temperatureUnit} />
+                        </TempContainer>
+                    </TitleContainer>
                     <Description color={primaryColor}>
                         {description}
                     </Description>

@@ -55,6 +55,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 `;
 
 const PeriodContainer = styled.div`
@@ -62,6 +63,8 @@ const PeriodContainer = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   padding: 10px 25px;
+  align-items: center;
+  justify-content: center;
 `;
 
 export default function App() {
@@ -163,6 +166,7 @@ export default function App() {
             primaryColor={primaryColor}
             {...period} />)}
         </PeriodContainer>
+        <h5 style={{ width: 100 }}>Created using weather.gov api, React and ❤️</h5>
       </Container>
     </div>
   );

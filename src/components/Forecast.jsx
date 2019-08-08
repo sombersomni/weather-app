@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import WeatherModal from '../components/WeatherModal.jsx';
+import Temperature from './Temperature.jsx';
 
 const ForecastContainer = styled.div`
     width: 150px;
@@ -15,7 +16,7 @@ const ForecastContainer = styled.div`
         color: ${props => props.disable ? 'inherit' : props.color}
     }
 `;
-export default function Forecast({ icon, name, shortForecast, detailedForecast, isDaytime, primaryColor, disable}) {
+export default function Forecast({ temperature, temperatureUnit, name, shortForecast, detailedForecast, isDaytime, primaryColor, disable }) {
     const [isOn, setIsOn] = useState(false);
     const [open, setOpen] = useState(false);
     function setIcon(weather, isDay) {
@@ -62,12 +63,15 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast, 
     return (
         <React.Fragment>
             <WeatherModal
-                open={open} 
+                open={open}
                 handleClose={handleClose}
                 primaryColor={primaryColor}
                 name={name}
-                description={detailedForecast}/>
-            <ForecastContainer 
+                primaryColor={primaryColor}
+                description={detailedForecast}
+                temperature={temperature}
+                temperatureUnit={temperatureUnit} />
+            <ForecastContainer
                 onMouseEnter={() => { setIsOn(true) }}
                 onMouseLeave={() => { setIsOn(false) }}
                 onClick={() => { setOpen(true) }}
@@ -79,6 +83,10 @@ export default function Forecast({ icon, name, shortForecast, detailedForecast, 
                         size='4x'
                         icon={setIcon(forecast.trim(), isDaytime)} />
                 )}
+                <Temperature
+                    small={true}
+                    temperature={temperature}
+                    unit={temperatureUnit} />
                 <h3>{name}</h3>
                 <p style={{ pading: '0px 5px' }}>{shortForecast}</p>
             </ForecastContainer>

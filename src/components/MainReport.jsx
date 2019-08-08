@@ -42,13 +42,16 @@ export default function MainReport({ city, state, currentReport, detailedForecas
     return (
         <ReportContainer>
             <TempContainer color={primaryColor}>
-                <Temperature temperature={temperature} unit={temperatureUnit} />
+                <Temperature 
+                    temperature={temperature} 
+                    unit={temperatureUnit} 
+                    small={false} />
                 <h4 style={{ width: '50%', textAlign: 'center' }}>{city}, {state}</h4>
             </TempContainer>
             <WeatherFeature>
                 <div>
                     <div style={{ float: 'left' }}>
-                        <Forecast {...currentReport} disable={true}/>
+                        <Forecast {...currentReport} primaryColor={primaryColor} disable={true}/>
                     </div>
                     <Description
                         color={primaryColor}>{currentReport.detailedForecast.length > 0 ? currentReport.detailedForecast : (detailedForecast || "No description was found")}</Description>

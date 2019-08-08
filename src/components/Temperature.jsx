@@ -8,16 +8,17 @@ const TempContainer = styled.div`
     flex-wrap: no-wrap;
     align-items: top;
     justify-content: center;
+    position: relative;
 `;
 
 const Container = styled.div`
     min-width: 150px;
 `;
-export default function Temperature({temperature, unit}) {
+export default function Temperature({temperature, unit, small}) {
     return (
-        <Container>
+        <Container small={small}>
             <TempContainer>
-                <h1>{temperature}</h1>
+                <h1 style={{ fontSize: small ? '1.5em' : ''}}>{temperature}</h1>
                 <div>
                     <h5>{unit} 
                     <FontAwesomeIcon
