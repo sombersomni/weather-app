@@ -6,6 +6,7 @@ import Forecast from './components/Forecast.jsx';
 import MainReport from './components/MainReport.jsx';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
+  faTemperatureHot,
   faMountains,
   faCompass,
   faFog,
@@ -25,6 +26,7 @@ import { faCloud, faSun, faTornado } from '@fortawesome/pro-solid-svg-icons';
 import { faCircle } from '@fortawesome/pro-regular-svg-icons';
 import './App.css';
 library.add(
+  faTemperatureHot,
   faMountains,
   faCompass,
   faWind,
@@ -50,18 +52,33 @@ const Message = styled.div`
 
 const Container = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const PeriodContainer = styled.div`
+  display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
+  padding: 10px 25px;
 `;
 
 export default function App() {
   const [message, setMessage] = useState('');
-  const [savedElevation, setElevation] = useState([]);
+  const [weatherStats, setWeatherStats] = useState({});
   const [savedPeriods, setPeriods] = useState([]);
   const [hourlyPeriods, setHourlyPeriods] = useState([]);
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
+  function setColor(temp) {
+    if (temp >= 80) {
+      return '#E9A139';
+    } else if (temp >= 50 && temp < 80) {
+      return '#7FDAF4';
+    } else {
+      return '#3492fb'
+    }
+  }
   useEffect(() => {
     const options = {
       enableHighAccuracy: true,
@@ -71,38 +88,42 @@ export default function App() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(pos => {
         const { coords } = pos;
-        console.log('Your current position is:');
-        console.log(`Latitude : ${coords.latitude}`);
-        console.log(`Longitude: ${coords.longitude}`);
-        console.log(`More or less ${coords.accuracy} meters.`);
-        let query;
+        let query = [];
         axios.get(`https://api.weather.gov/points/${coords.latitude},${coords.longitude}`)
           .then(res => {
             if (res.status === 200) {
               console.log(res.data);
               const { properties } = res.data;
-              const { forecast, forecastHourly, relativeLocation } = properties;
+              const { forecast, forecastHourly, forecastGridData, relativeLocation } = properties;
               setCity(relativeLocation.properties.city);
               setState(relativeLocation.properties.state);
-              query = forecast;
+              query[0] = forecast;
+              query[1] = forecastGridData;
               return axios.get(forecastHourly);
             }
           })
           .then(res => {
             if (res.status === 200) {
               const { properties } = res.data;
-              const { elevation, periods } = properties;
-              setElevation(elevation);
+              const { periods } = properties;
               setHourlyPeriods(periods);
-              return axios.get(query);
+              return axios.get(query[0]);
             }
           })
           .then(res => {
             if (res.status === 200) {
               console.log(res.data);
               const { properties } = res.data;
-              const { elevation, periods } = properties;
+              const { periods } = properties;
               setPeriods(periods);
+              return axios.get(query[1]);
+            }
+          })
+          .then(res => {
+            if (res.status === 200) {
+              console.log(res.data);
+              const { properties } = res.data;
+              setWeatherStats(properties);
             }
           })
           .catch(err => {
@@ -116,6 +137,8 @@ export default function App() {
       setMessage('Geolocation is not supported in this browser')
     }
   }, [])
+
+  const primaryColor = hourlyPeriods && hourlyPeriods.length > 1 ? setColor(hourlyPeriods[0].temperature) : "#00A9FC"
   return (
     <div className='App'>
       <Message>
@@ -124,15 +147,21 @@ export default function App() {
       <Container>
         {hourlyPeriods.length > 0 ?
           <MainReport
-            elevation={savedElevation}
+            primaryColor={primaryColor}
+            weatherStats={weatherStats}
             detailedForecast={savedPeriods.length > 0 ? savedPeriods[0].detailedForecast : null}
             currentReport={hourlyPeriods[0]}
             city={city}
             state={state} /> : null
         }
-        {savedPeriods.map(period => <Forecast
-          key={period.number.toString()}
-          {...period} />)}
+        <h3>Weekly Report</h3>
+        <PeriodContainer>
+          {savedPeriods.map(period => <Forecast
+            key={period.number.toString()}
+            disable={false}
+            primaryColor={primaryColor}
+            {...period} />)}
+        </PeriodContainer>
       </Container>
     </div>
   );

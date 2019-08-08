@@ -10,11 +10,6 @@ const TempContainer = styled.div`
     justify-content: center;
 `;
 
-const IconContainer = styled.div`
-    display: block;
-    position: relative;
-`;
-
 const Container = styled.div`
     min-width: 150px;
 `;
@@ -23,7 +18,7 @@ export default function Temperature({temperature, unit}) {
         <Container>
             <TempContainer>
                 <h1>{temperature}</h1>
-                <IconContainer>
+                <div>
                     <h5>{unit} 
                     <FontAwesomeIcon
                         size='1x'
@@ -34,7 +29,7 @@ export default function Temperature({temperature, unit}) {
                         }}
                         icon={['far', 'circle']} />
                         </h5>      
-                </IconContainer>
+                </div>
             </TempContainer>
 
         </Container>

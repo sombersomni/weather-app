@@ -16,6 +16,8 @@ const ReportContainer = styled.div`
     display: flex;
     flex-direction: row;
     padding: 5px;
+    max-width: 100vw;
+    background: #222;
 `;
 
 const WeatherFeature = styled.div`
@@ -23,6 +25,7 @@ const WeatherFeature = styled.div`
     flex-direction: column;
     padding: 5px 10px;
     background: #DDD;
+    width: 100%;
 `;
 
 const Description = styled.p`
@@ -33,37 +36,33 @@ const Description = styled.p`
         color: ${props => props.color || '#00ACF9'}
     }
 `;
-export default function MainReport({ city, state, currentReport, detailedForecast, elevation }) {
-    console.log(currentReport);
-    function setColor(temp) {
-        if(temp >= 80) {
-            return '#E9A139';
-        } else if (temp >= 50 && temp < 80) {
-            return '#7FDAF4';
-        } else {
-            return '#3492fb'
-        }
-    }
+export default function MainReport({ city, state, currentReport, detailedForecast, weatherStats, primaryColor }) {
     const { 
         temperature, 
         temperatureUnit, 
         windSpeed, 
         windDirection } = currentReport;
+    const {
+        elevation,
+        heatIndex
+    } = weatherStats; 
+
     return (
         <ReportContainer>
-            <TempContainer color={setColor(temperature)}>
+            <TempContainer color={primaryColor}>
                 <Temperature temperature={temperature} unit={temperatureUnit} />
                 <h4 style={{ width: '50%', textAlign: 'center' }}>{city}, {state}</h4>
             </TempContainer>
             <WeatherFeature>
                 <div>
                     <div style={{ float: 'left' }}>
-                        <Forecast {...currentReport} />
+                        <Forecast {...currentReport} disable={true}/>
                     </div>
                     <Description
-                        color={setColor(temperature)}>{currentReport.detailedForecast.length > 0 ? currentReport.detailedForecast : detailedForecast}</Description>
+                        color={primaryColor}>{currentReport.detailedForecast.length > 0 ? currentReport.detailedForecast : (detailedForecast || "No description was found")}</Description>
                 </div>
                 <WeatherStats
+                    heatIndex={heatIndex}
                     windDir={windDirection}
                     wind={windSpeed}
                     elevation={elevation} />

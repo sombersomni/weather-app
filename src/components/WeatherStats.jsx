@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import convertDegs from '../helper/convertDegs';
+
 const StatsContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -26,13 +28,10 @@ const StatTitle = styled.h5`
     padding: 5px;
     border-radius: 5px;
 `;
-export default function WeatherStats({wind, windDir, elevation}) {
-    console.log(elevation)
+export default function WeatherStats({wind, windDir, elevation, heatIndex}) {
     const windStat = wind.split(' ');
     const windSpeed = windStat[0].trim();
     const windSpeedUnit = windStat[1].trim();
-    const { value, unitCode } = elevation;
-    const elevationUnit = unitCode.slice(5);
     return (
         <StatsContainer>
             <Stat>
@@ -56,18 +55,44 @@ export default function WeatherStats({wind, windDir, elevation}) {
                         {windDir} 
                     </StatText>
             </Stat>
-            <Stat>
+            { elevation ? 
+            ( <Stat>
                 <StatTitle>Elevation</StatTitle>
                 <FontAwesomeIcon 
                     size='2x'
                     icon={['fad', 'mountains']} />
                      <StatText>
-                        {value.toFixed(2)} 
+                        {elevation.value.toFixed(2)} 
                         <span style={{ fontSize: '0.5em'}}>
-                            {elevationUnit}
+                            {elevation.unitCode.slice(5)}
                         </span>
                     </StatText>
-            </Stat>
+            </Stat> ) : null }
+            { heatIndex && heatIndex.values.length > 1 ? 
+            ( <Stat>
+                <StatTitle>Heat Index</StatTitle>
+                <FontAwesomeIcon 
+                    size='2x'
+                    icon={['fad', 'temperature-hot']} />
+                     <StatText>
+                        {heatIndex.uom.includes('degC') ? 
+                            convertDegs(heatIndex.values[0].value).toFixed(2) : 
+                            heatIndex.values[0].value.toFixed(2)} 
+                        <span style={{ fontSize: '0.5em', position: 'relative'}}>
+                            {heatIndex.sourceUnit}
+                            <FontAwesomeIcon
+                                size='1x'
+                                style={{ 
+                                    fontSize: '0.5em',
+                                    position: 'absolute',
+                                    top: 3,
+                                    marginLeft: 2        
+                                }}
+                                icon={['far', 'circle']} />
+                        </span>
+                        
+                    </StatText>
+            </Stat> ) : null }
         </StatsContainer>
     )
 }
