@@ -90,78 +90,87 @@ export default function App() {
       return '#3492fb'
     }
   }
+  function handleRequest(coordinates) {
+    let query = [];
+    axios.get(`https://api.weather.gov/points/${coordinates}`)
+      .then(res => {
+        if (res.status === 200) {
+          const { properties } = res.data;
+          const { forecast, forecastHourly, forecastGridData, relativeLocation } = properties;
+          setCity(relativeLocation.properties.city);
+          setState(relativeLocation.properties.state);
+          query[0] = forecast;
+          query[1] = forecastGridData;
+          return axios.get(forecastHourly);
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          const { properties } = res.data;
+          const { periods } = properties;
+          setHourlyPeriods(periods);
+          return axios.get(query[0]);
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          const { properties } = res.data;
+          const { periods } = properties;
+          setPeriods(periods);
+          return axios.get(query[1]);
+        }
+      })
+      .then(res => {
+        if (res.status === 200) {
+          const { properties } = res.data;
+          setWeatherStats(properties);
+        }
+      })
+      .catch(err => {
+        setMessage("Your location may be out of range❗ App works with US 🌎territories only. Enter in coordinates below (try using google maps or example below)");
+        setIsCoords(true);
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }
+
+  function retry(lattitude, longitude) {
+    setIsCoords(false);
+    setLoading(true);
+    setCoords([lattitude, longitude])
+  }
+
   useEffect(() => {
     const options = {
       enableHighAccuracy: true,
       timeout: 5000,
       maximumAge: 0
     };
-    if (navigator.geolocation) {
-      if (!isCoords) {
+    if(!isCoords && coordsArr.length === 2) {
+      const coordinates = coordsArr[0] + ',' + coordsArr[1];
+      handleRequest(coordinates);
+    } else {
+      if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
           const { coords } = pos;
-          let query = [];
-          const coordinates = coordsArr.length === 2 ? coordsArr[0] + ',' + coordsArr[1] : coords.latitude + ',' + coords.longitude;
-          console.log(coordinates);
-          axios.get(`https://api.weather.gov/points/${coordinates}`)
-            .then(res => {
-              if (res.status === 200) {
-                const { properties } = res.data;
-                const { forecast, forecastHourly, forecastGridData, relativeLocation } = properties;
-                setCity(relativeLocation.properties.city);
-                setState(relativeLocation.properties.state);
-                query[0] = forecast;
-                query[1] = forecastGridData;
-                return axios.get(forecastHourly);
-              }
-            })
-            .then(res => {
-              if (res.status === 200) {
-                const { properties } = res.data;
-                const { periods } = properties;
-                setHourlyPeriods(periods);
-                return axios.get(query[0]);
-              }
-            })
-            .then(res => {
-              if (res.status === 200) {
-                const { properties } = res.data;
-                const { periods } = properties;
-                setPeriods(periods);
-                return axios.get(query[1]);
-              }
-            })
-            .then(res => {
-              if (res.status === 200) {
-                const { properties } = res.data;
-                setWeatherStats(properties);
-              }
-            })
-            .catch(err => {
-              setMessage("Your location may be out of range❗ App works with US 🌎territories only. Enter in coordinates below (try using google maps or example below)");
-              setIsCoords(true);
-            })
-            .finally(() => {
-              setLoading(false)
-            })
+          const coordinates = coords.latitude + ',' + coords.longitude;
+          handleRequest(coordinates);
+  
         }, err => {
           console.log(err.message);
           setMessage("Your location may be out of range❗ App works with US 🌎territories only. Enter in coordinates below (try using google maps or example below)");
           setIsCoords(true);
           setLoading(false);
         }, options);
+      } else {
+        setMessage('Geolocation is not supported in this browser❗ Try a different browser');
+        setIsGeo(true);
+        setLoading(false);
       }
-    } else {
-      setMessage('Geolocation is not supported in this browser❗ Try a different browser');
-      setIsGeo(true);
-      setLoading(false);
     }
   }, [isCoords])
-  function retry(lattitude, longitude) {
-    setIsCoords(false);
-    setLoading(true);
-    setCoords([lattitude, longitude])
-  }
+
   const primaryColor = hourlyPeriods && hourlyPeriods.length > 1 ? setColor(hourlyPeriods[0].temperature) : "#00A9FC"
   return (
     <div className='App'>
