@@ -23,7 +23,7 @@ const ReportContainer = styled.div`
     display: flex;
     flex-direction: row;
     padding: 5px;
-    max-width: 100vw;
+    max-width: 90vw;
     background: #222;
 `;
 
