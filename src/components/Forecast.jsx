@@ -15,9 +15,12 @@ const ForecastContainer = styled.div`
     padding-top: 10px;
     border-radius: 5px;
     cursor: ${props => props.disable ? 'default' : 'pointer'};
+    color: ${props => props.disable ? 'inherit' : "rgba(0,0,0,1)"};
+    background: ${props => props.disable ? 'inherit' : "rgba(255,255,255,0)"};
     &:hover {
         box-shadow: ${props => props.disable ? 'none' : '1px 1px 4px 1px rgba(0,0,0,0.4)'};
-        color: ${props => props.disable ? 'inherit' : props.color}
+        color: ${props => props.disable ? 'inherit' : "rgba(0,0,0,0.75)"};
+        background: ${props => props.disable ? 'inherit' : "rgba(255,255,255,0.2)"};
     }
 `;
 export default function Forecast({ temperature, temperatureUnit, name, shortForecast, detailedForecast, isDaytime, primaryColor, disable }) {

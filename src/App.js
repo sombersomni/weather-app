@@ -29,6 +29,7 @@ import {
 import { faCloud, faSun, faTornado, faMapMarkerCheck } from '@fortawesome/pro-solid-svg-icons';
 import { faCircle, faTimes } from '@fortawesome/pro-regular-svg-icons';
 import './App.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 library.add(
   faMapMarkerCheck,
   faHumidity,
@@ -70,6 +71,22 @@ const PeriodContainer = styled.div`
   justify-content: center;
 `;
 
+const BG = styled.div`
+  color: white;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  trasition: background 1s;
+`;
+
+const Title = styled.h3`
+  background: white;
+  padding:  5px 10px;
+  border-radius: 10px;
+`;
 export default function App() {
   const [message, setMessage] = useState('');
   const [weatherStats, setWeatherStats] = useState({});
@@ -172,8 +189,35 @@ export default function App() {
   }, [isCoords])
 
   const primaryColor = hourlyPeriods && hourlyPeriods.length > 1 ? setColor(hourlyPeriods[0].temperature) : "#00A9FC"
+  const cloudPositions = [
+    {dir: 'right', x: 100, y: 100, size: 4}, 
+    {dir: 'left', x: 100, y:100, size: 6 },
+    {dir: 'left', x: '50%', y: 200, size: 8},
+    {dir: 'left', x: 0, y: 250, size: 8},
+    {dir: 'right', x: -50, y: 250, size: 8}
+  ];
+  function renderClouds(positions) {
+    const cloudStyle = {
+      position: "absolute"
+    }
+   return positions.map(pos => <FontAwesomeIcon 
+            size={`${pos.size}x`}
+            icon={['fas', 'cloud']} 
+            style={{
+              ...cloudStyle,
+              top: pos.y,
+              [pos.dir]: pos.x
+            }}/>);
+  }
   return (
-    <div className='App'>
+    <div 
+      className='App'
+      style={{
+        background: `linear-gradient(#ffffff,${primaryColor || "#ffffff"})`
+      }}>
+      <BG>
+        {renderClouds(cloudPositions)}
+      </BG>
       <LoadScreen
         retry={retry}
         message={message}
@@ -191,7 +235,7 @@ export default function App() {
                 city={city}
                 state={state} /> : null
             }
-            <h3>Weekly Report</h3>
+            <Title>Weekly Report</Title>
             <PeriodContainer>
               {savedPeriods.map(period => <Forecast
                 key={period.number.toString()}
